@@ -40,11 +40,7 @@ public class ChessController implements Initializable {
     }
     @FXML
     private void jugar(MouseEvent event) throws IOException {
-        List<String> pieceTypes = new ArrayList<>();
-        pieceTypes.add("Blancas");
-        pieceTypes.add("Negras");
-        Collections.shuffle(pieceTypes);
-
+        ArrayList<String> pieceTypes = Chess.randomizarFichas();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TipoFichas.fxml"));
         Parent choosePieceTypeParent = loader.load();
 
@@ -53,7 +49,9 @@ public class ChessController implements Initializable {
         choosePieceTypeController.pieceType2Property().set(pieceTypes.get(1));
 
         Scene choosePieceTypeScene = new Scene(choosePieceTypeParent);
+        // Obtén la ventana actual (stage)
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        // Cambia la escena en la ventana existente
         window.setScene(choosePieceTypeScene);
         window.show();
         }

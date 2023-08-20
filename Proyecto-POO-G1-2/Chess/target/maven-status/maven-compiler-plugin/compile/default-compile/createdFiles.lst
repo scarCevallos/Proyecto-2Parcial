@@ -1,7 +1,8 @@
 ec\edu\espol\chess\TableroController.class
-ec\edu\espol\chess\ChessController.class
-ec\edu\espol\chess\SecondaryController.class
-ec\edu\espol\chess\PrimaryController.class
 module-info.class
 ec\edu\espol\chess\ChoosePieceTypeController.class
 ec\edu\espol\chess\App.class
+ec\edu\espol\chess\Chess.class
+ec\edu\espol\chess\ChessController.class
+ec\edu\espol\chess\SecondaryController.class
+ec\edu\espol\chess\PrimaryController.class
