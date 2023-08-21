@@ -10,5 +10,7 @@ package ec.edu.espol.model;
  */
 public class Peon {
     private String imgName;
+    private TipoFichas PEON;
     
+    //realizar las validaciones necesarias para ver si es movimiento valido
 }
