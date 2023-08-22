@@ -23,7 +23,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 
 
@@ -73,14 +76,17 @@ public class TableroMController implements Initializable {
                 ImageView im= new ImageView();
                 imageViews[row][col]= im;
                 b.setGraphic(im);
-                b.setStyle("-fx-border-color: black; -fx-border-width: 20px;");
+                b.setStyle("-fx-border-color: black; -fx-border-width: 20px; -fx-padding: 5px;");
+                
                 if((row+col)%2==0){
-                    b.setStyle("-fx-base: white;-fx-border-color: black; -fx-border-width: 1.5px;");
+                    b.setStyle("-fx-base: white;-fx-border-color: black; -fx-border-width: 1.5px; ");
                 }
                 else{
-                    b.setStyle("-fx-base: lightgoldenrodyellow;-fx-border-color: black; -fx-border-width: 1.5px;");
+                    b.setStyle("-fx-base: lightgoldenrodyellow;-fx-border-color: black; -fx-border-width: 1.5px; -fx-padding: 0p; -fx-margin: 0px");
                 }
                 buttons[row][col]=b;
+                b.setMinSize(Button.USE_COMPUTED_SIZE, Button.USE_COMPUTED_SIZE);
+                b.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
                 gridPane.add(b,col,row);
                 if (row == 0 && col == 0) {
                 setImage(im, "/fichas/torreB.png",40,50);
@@ -127,6 +133,7 @@ public class TableroMController implements Initializable {
                 b.setOnMouseClicked(this::handleButtonClick);
         }
         borderPane.setCenter(gridPane);
+
     }
     }
     private void setImage(ImageView imageView, String imagePath, double width, double height) {

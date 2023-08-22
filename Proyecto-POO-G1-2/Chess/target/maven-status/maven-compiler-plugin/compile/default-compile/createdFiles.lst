@@ -6,7 +6,6 @@ ec\edu\espol\controllers\TableroMController.class
 ec\edu\espol\chess\Chess.class
 ec\edu\espol\controllers\imageView.class
 ec\edu\espol\chess\SecondaryController.class
-ec\edu\espol\model\Peon.class
 ec\edu\espol\chess\PrimaryController.class
 ec\edu\espol\chess\GamePhase.class
 ec\edu\espol\controllers\ChoosePieceTypeController.class

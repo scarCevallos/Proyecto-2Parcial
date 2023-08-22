@@ -8,9 +8,9 @@ package ec.edu.espol.model;
  *
  * @author Jonathan
  */
-public class Peon {
-    private String imgName;
-    private TipoFichas PEON;
+//public class Peon {
+//    private String imgName;
+//    private TipoFichas PEON;
     
     //realizar las validaciones necesarias para ver si es movimiento valido
-}
+//}
