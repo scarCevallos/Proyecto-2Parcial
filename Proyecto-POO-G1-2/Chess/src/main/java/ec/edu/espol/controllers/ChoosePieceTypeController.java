@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package ec.edu.espol.chess;
+package ec.edu.espol.controllers;
 
 import java.io.IOException;
 import java.net.URL;
@@ -51,9 +51,11 @@ public class ChoosePieceTypeController implements Initializable {
     }
     @FXML
     private void continuar(MouseEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Tablero.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ec/edu/espol/chess/TableroM.fxml"));
         Parent tableroParent = loader.load();
-        Scene tableroScene = new Scene(tableroParent);
+        Scene tableroScene = new Scene(tableroParent,680,480);
+        TableroMController tableroController = loader.getController();
+        tableroController.setScene(tableroScene);
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(tableroScene);
         window.show();

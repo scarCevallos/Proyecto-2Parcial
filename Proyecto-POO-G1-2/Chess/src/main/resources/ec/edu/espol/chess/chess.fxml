@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.edu.espol.chess.ChessController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.edu.espol.controllers.ChessController">
    <top>
         <VBox alignment="CENTER" spacing="10" BorderPane.alignment="CENTER">
             <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="84.0" prefWidth="378.0" text="Un juego llamado Ajedrez" textAlignment="JUSTIFY" BorderPane.alignment="CENTER">
