@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
-package ec.edu.espol.chess;
+package ec.edu.espol.controllers;
 
+import ec.edu.espol.chess.Chess;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class ChessController implements Initializable {
     @FXML
     private void jugar(MouseEvent event) throws IOException {
         ArrayList<String> pieceTypes = Chess.randomizarFichas();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("TipoFichas.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ec/edu/espol/chess/TipoFichas.fxml"));
         Parent choosePieceTypeParent = loader.load();
 
         ChoosePieceTypeController choosePieceTypeController = loader.getController();
