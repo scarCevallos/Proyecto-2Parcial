@@ -4,7 +4,9 @@
  */
 package ec.edu.espol.controllers;
 
+import ec.edu.espol.chess.Ficha;
 import ec.edu.espol.chess.GamePhase;
+import ec.edu.espol.chess.Jugador;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -57,16 +59,19 @@ public class TableroMController implements Initializable {
     private boolean[][] casillasValidas= new boolean[8][8];
     private int turno=1;
     private String tipoFicha="Blancas";
+    private ArrayList<Jugador> players;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        inicializarTablero();
-        mensajeTurno();
     } 
     public void setScene(Scene scene) {
         tableroScene = scene;
     }
-
+    public void setPlayers(ArrayList<Jugador> players) {
+        this.players = players;
+        inicializarTablero();
+        mensajeTurno();
+    }
     
     private void inicializarTablero(){
         for(int row=0; row<8;row++){
@@ -88,47 +93,54 @@ public class TableroMController implements Initializable {
                 b.setMinSize(Button.USE_COMPUTED_SIZE, Button.USE_COMPUTED_SIZE);
                 b.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
                 gridPane.add(b,col,row);
-                if (row == 0 && col == 0) {
-                setImage(im, "/fichas/torreB.png",40,50);
+                if (row == 0 && (col == 0 || col==7)) {
+                setImage(im, "/fichas/torrenegro.png",40,50);
+                im.setUserData(new Ficha("torre","negro",row,col));
                 } 
-                else if (row == 0 && col == 7) {
-                setImage(im, "/fichas/torreB.png",40,50);
-                } 
-                else if (row == 7 && col == 0) {
-                setImage(im, "/fichas/torreW.png",40,50);
-                } 
-                else if (row == 7 && col == 7) {
-                setImage(im, "/fichas/torreW.png",40,50);
+                else if (row == 7 && (col == 0 || col==7)) {
+                setImage(im, "/fichas/torreblanco.png",40,50);
+                im.setUserData("blanco");
+                im.setUserData(new Ficha("torre","blanco",row,col));
                 } 
                 else if (row == 0 && (col == 1 || col == 6)) {
-                setImage(im, "/fichas/CaballoB.png",40,50);
+                setImage(im, "/fichas/Caballonegro.png",40,50);
+                im.setUserData(new Ficha("caballo","negro",row,col));
                 } 
                 else if (row == 7 && (col == 1 || col == 6)) {
-                setImage(im, "/fichas/CaballoW.png",40,50);
+                setImage(im, "/fichas/Caballoblanco.png",40,50);
+                im.setUserData(new Ficha("caballo","blanco",row,col));
                 } 
                 else if (row == 0 && (col == 2 || col == 5)) {
-                setImage(im, "/fichas/AlfilB.png",40,50);
+                setImage(im, "/fichas/Alfilnegro.png",40,50);
+                im.setUserData(new Ficha("alfil","negro",row,col));
                 } 
                 else if (row == 7 && (col == 2 || col == 5)) {
-                setImage(im, "/fichas/AlfilW.png",40,50);
+                setImage(im, "/fichas/Alfilblanco.png",40,50);
+                im.setUserData(new Ficha("alfil","blanco",row,col));
                 } 
                 else if (row == 0 && col == 3) {
-                setImage(im, "/fichas/reinaB.png",40,50);
+                setImage(im, "/fichas/reinanegro.png",40,50);
+                im.setUserData(new Ficha("reina","negro",row,col));
                 } 
                 else if(row==7 && col==3){
-                    setImage(im, "/fichas/reinaW.png",40,50);
+                setImage(im, "/fichas/reinablanco.png",40,50);
+                im.setUserData(new Ficha("reina","blanco",row,col));
                 }
                 else if (row == 0 && col == 4) {
-                setImage(im, "/fichas/reyN.png",40,50);
+                setImage(im, "/fichas/reynegro.png",40,50);
+                im.setUserData(new Ficha("rey","negro",row,col));
                 } 
                 else if (row == 7 && col == 4) {
-                setImage(im, "/fichas/reyW.png",40,50);
+                setImage(im, "/fichas/reyblanco.png",40,50);
+                im.setUserData(new Ficha("rey","blanco",row,col));
                 } 
                 else if (row == 1) {
-                setImage(im, "/fichas/peonB.png",40,50);
+                setImage(im, "/fichas/peonnegro.png",40,50);
+                im.setUserData(new Ficha("peon","negro",row,col));
                 } 
                 else if (row == 6) {
-                setImage(im, "/fichas/PeonW.png",40,50);
+                setImage(im, "/fichas/Peonblanco.png",40,50);
+                im.setUserData(new Ficha("peon","blanco",row,col));
                 }
                 b.setOnMouseClicked(this::handleButtonClick);
         }
@@ -147,7 +159,18 @@ public class TableroMController implements Initializable {
 }
    
     private void mensajeTurno() {
-        String mturno= tipoFicha+"Turno N°"+turno;
+        Jugador jugadoractual=null;
+        for(Jugador j: players){
+            if(turno%2==0 && (j.getTipoFicha().equalsIgnoreCase("Negras"))){
+                jugadoractual=j;
+                break;
+            }
+            else if(turno%2!=0 && (!j.getTipoFicha().equalsIgnoreCase("Negras"))){
+               jugadoractual=j;
+               break;
+            }
+        }
+        String mturno= "Jugador "+ jugadoractual.getId()+ " "+"Turno N° "+turno;
         turnoLabel.setText(mturno);
     }
     private void iniciarNuevoTurno(){
@@ -161,39 +184,66 @@ public class TableroMController implements Initializable {
         currentPhase=GamePhase.STANDBY;
         mensajeTurno();
     }
+    private boolean turnoJugador(ImageView imv){
+        Jugador jugadoractual=null;
+        Jugador jblanco= null;
+        Jugador jnegro= null;
+        for(Jugador j: players){
+            if(turno%2==0 && (j.getTipoFicha().equalsIgnoreCase("Negras"))){
+                jugadoractual=j;
+                jnegro=j;
+                break;
+            }
+            else if(turno%2!=0 && (!j.getTipoFicha().equalsIgnoreCase("Negras"))){
+               jugadoractual=j;
+               jblanco=j;
+               break;
+            }
+        }
+        return (jugadoractual==jblanco && fichaBlanca(imv))||(jugadoractual==jnegro && fichaNegra(imv));
+    }
+    private boolean fichaBlanca(ImageView imv){
+        Ficha userData= (Ficha) imv.getUserData();
+        return userData!=null && (userData.getColor()).equals("blanco");
+    }
+    private boolean fichaNegra(ImageView imv){
+        Ficha userData= (Ficha) imv.getUserData();
+        return userData!=null && (userData.getColor()).equals("negro");
+    }
     private void handleButtonClick(MouseEvent event) {
     Button boton = (Button) event.getSource();
     ImageView imageView = (ImageView) boton.getGraphic();
-    switch(currentPhase){
-        case STANDBY:
-            if(esImagenFichaValida(imageView)){
-                fichaSeleccionada=imageView;
-                currentPhase= GamePhase.MAIN;
-                resetearColorCasillas();
-                casillasValidas= calcularCasillasValidas(fichaSeleccionada);
-                resaltarCasillasValidas(casillasValidas);
-            }
-            else{
-                mostrarMensaje("Seleccion no valida");
-            }
-            break;
-        case MAIN:
-            if(imageView!=fichaSeleccionada && !esImagenFichaValida(imageView)){
-                moverFicha(imageView);
-                resetearColorCasillas();
-                currentPhase=GamePhase.BATTLE;
-            }
-            else if(esImagenFichaValida(imageView)){
-                fichaSeleccionada= imageView;
-                resetearColorCasillas();
-                casillasValidas= calcularCasillasValidas(fichaSeleccionada);
-                resaltarCasillasValidas(casillasValidas);
-            }
-            break;
-        case BATTLE:
-            iniciarNuevoTurno();
-            break;
-    }   
+        switch(currentPhase){
+            case STANDBY:
+                if(turnoJugador(imageView)){
+                    if(esImagenFichaValida(imageView)){
+                        fichaSeleccionada=imageView;
+                        currentPhase= GamePhase.MAIN;
+                        resetearColorCasillas();
+                        casillasValidas= calcularCasillasValidas(fichaSeleccionada);
+                        resaltarCasillasValidas(casillasValidas);
+                    }
+                }
+                break;
+            case MAIN:
+                System.out.println("Hola");
+                if(imageView!=fichaSeleccionada && !esImagenFichaValida(imageView)){
+                    moverFicha(imageView);
+                    resetearColorCasillas();
+                    iniciarNuevoTurno();
+                }
+                else if(esImagenFichaValida(imageView)){
+                    fichaSeleccionada= imageView;
+                    resetearColorCasillas();
+                    casillasValidas= calcularCasillasValidas(fichaSeleccionada);
+                    resaltarCasillasValidas(casillasValidas);
+                }
+                break;
+            case BATTLE:
+                iniciarNuevoTurno();
+                break;
+        }
+   
 }
 
 // Método para verificar si la imagen es la imagen de una ficha válida
@@ -203,10 +253,12 @@ public class TableroMController implements Initializable {
     }
     private void moverFicha(ImageView destino){
         if (fichaSeleccionada!=null && destino != null){
+            Ficha f=(Ficha) fichaSeleccionada.getUserData();
             Image image= fichaSeleccionada.getImage();
             destino.setImage(image);
             destino.setFitWidth(40);
             destino.setFitHeight(50);
+            destino.setUserData(f);
             fichaSeleccionada.setImage(null);
         }
         fichaSeleccionada=null;

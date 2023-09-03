@@ -4,7 +4,9 @@
  */
 package ec.edu.espol.controllers;
 
+import ec.edu.espol.chess.App;
 import ec.edu.espol.chess.Chess;
+import ec.edu.espol.chess.Jugador;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -41,19 +43,13 @@ public class ChessController implements Initializable {
     }
     @FXML
     private void jugar(MouseEvent event) throws IOException {
-        ArrayList<String> pieceTypes = Chess.randomizarFichas();
+        ArrayList<String> pieceTypes = Jugador.randomizarFichas();
+        ArrayList<Jugador> players= Jugador.crearJugadores(pieceTypes);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ec/edu/espol/chess/TipoFichas.fxml"));
         Parent choosePieceTypeParent = loader.load();
-
+        Scene sc = new Scene(choosePieceTypeParent);
         ChoosePieceTypeController choosePieceTypeController = loader.getController();
-        choosePieceTypeController.pieceType1Property().set(pieceTypes.get(0));
-        choosePieceTypeController.pieceType2Property().set(pieceTypes.get(1));
-
-        Scene choosePieceTypeScene = new Scene(choosePieceTypeParent);
-        // Obtén la ventana actual (stage)
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        // Cambia la escena en la ventana existente
-        window.setScene(choosePieceTypeScene);
-        window.show();
+        choosePieceTypeController.setJugadores(players);
+        App.setScene(sc);
         }
 }
