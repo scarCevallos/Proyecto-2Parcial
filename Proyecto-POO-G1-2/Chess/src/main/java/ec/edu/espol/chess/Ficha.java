@@ -52,5 +52,9 @@ public class Ficha {
         this.fila = fila;
         this.columna = columna;
     }
+    public Ficha(int fila, int columna){
+        this.fila=fila;
+        this.columna= columna;
+    }
      
 }
