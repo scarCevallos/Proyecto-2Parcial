@@ -334,13 +334,14 @@ public class TableroMController implements Initializable {
         //promocionarPeon(destino);
         if( (origen.getColor().equals("blanco") && destinop.getFila()==0) || (origen.getColor().equals("negro") && destinop.getFila()==7) ){
             System.out.println("Puede ser promocinado");
-            String nuevaPieza = "torre"; // Aquí debes establecer el tipo de pieza elegido por el jugador
-
-            // Actualizar la imagen y los datos de la ficha del peón
-            fichaSeleccionada.setImage(new Image("/fichas/" + nuevaPieza + origen.getColor() + ".png"));
-            origen.setTipo(nuevaPieza);
+            nuevaFichaPromocioPeon("torre", new Image("/fichas/" + "torre" + origen.getColor() + ".png"), origen);
         }
         return movValido;
+    }
+    
+    private void nuevaFichaPromocioPeon(String nuevaPieza, Image img, Ficha origen) {
+        fichaSeleccionada.setImage(img);
+        origen.setTipo(nuevaPieza);
     }
 
     private boolean moverTorre(ImageView destino) {
