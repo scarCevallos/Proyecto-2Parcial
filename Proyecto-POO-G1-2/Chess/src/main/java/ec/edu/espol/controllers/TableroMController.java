@@ -64,7 +64,7 @@ public class TableroMController implements Initializable {
     private int idEnemigo;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-    } 
+    }
     public void setScene(Scene scene) {
         tableroScene = scene;
     }
@@ -73,7 +73,7 @@ public class TableroMController implements Initializable {
         inicializarTablero();
         mensajeTurno();
     }
-    
+
 
 
     private void inicializarTablero() {
@@ -99,7 +99,7 @@ public class TableroMController implements Initializable {
                 if (row == 0 && (col == 0 || col==7)) {
                 setImage(im, "/fichas/torrenegro.png",40,50);
                 im.setUserData(new Ficha("torre","negro",row,col));
-                } 
+                }
                 else if (row == 7 && (col == 0 || col==7)) {
                 setImage(im, "/fichas/torreblanco.png",40,50);
                 im.setUserData(new Ficha("torre","blanco",row,col));
@@ -192,7 +192,7 @@ public class TableroMController implements Initializable {
                 }
                break;
             }
-        }
+            }
         String mturno= "Jugador "+ jugadoractual.getId()+ " "+"Turno N° "+turno;
         turnoLabel.setText(mturno);
     }
@@ -215,7 +215,7 @@ public class TableroMController implements Initializable {
             else if(turno%2!=0 && (!j.getTipoFicha().equalsIgnoreCase("Negras"))){
                jugadoractual=j;
                jblanco=j;
-               break;
+                break;
             }
         }
         return (jugadoractual==jblanco && fichaBlanca(imv))||(jugadoractual==jnegro && fichaNegra(imv));
@@ -288,7 +288,7 @@ public class TableroMController implements Initializable {
         }
         else{
             return userData!=null && (userData.getColor()).equals("blanco");
-        }
+    }
     }
     private boolean fichaNegra(ImageView imv){
         Ficha userData= (Ficha) imv.getUserData();
@@ -297,11 +297,11 @@ public class TableroMController implements Initializable {
         }
         else{
             return userData!=null && (userData.getColor()).equals("negro");
-        }
+    }
     }
     private void handleButtonClick(MouseEvent event) {
-    Button boton = (Button) event.getSource();
-    ImageView imageView = (ImageView) boton.getGraphic();
+        Button boton = (Button) event.getSource();
+        ImageView imageView = (ImageView) boton.getGraphic();
         switch(currentPhase){
             case STANDBY:
                 if(turnoJugador(imageView)){
@@ -389,9 +389,9 @@ public class TableroMController implements Initializable {
                             }
                             iniciarNuevoTurno();
                         }
-                    }
+                        }
                     resetearColorCasillas();
-                    
+
                 }
                 else if(esImagenFichaValida2(imageView,fichaSeleccionada)){
                     fichaSeleccionada= imageView;
@@ -404,8 +404,8 @@ public class TableroMController implements Initializable {
                 iniciarNuevoTurno();
                 break;
         }
-   
-}
+
+    }
 
 // Método para verificar si la imagen es la imagen de una ficha válida
     private boolean esImagenFichaValida(ImageView imageView) {
@@ -445,101 +445,107 @@ public class TableroMController implements Initializable {
                     movValido= true;
                 }
             }
-        }
+                }
         else if(!colorOrigen.equals("blanco")){
             if(fDestino==fOrigen+1 && cDestino==cOrigen){
                 if((destino.getImage()==null)){
                     movValido= true;
-                }
             }
         }
+                }
         if(colorOrigen.equals("blanco") && fOrigen==6){
             if(fDestino==fOrigen-2 && cDestino == cOrigen){
                 if((destino.getImage()==null)&&(casillaIntermediaVacia)){
                     movValido= true;
+            }
                 }
             }
-        }
         else if(colorOrigen.equals("negro") && fOrigen==1){
             if(fDestino==fOrigen+2 && cDestino == cOrigen){
                 if((destino.getImage()==null)&&(casillaIntermediaVacia)){
                     movValido= true;
+        }
                 }
             }
-        }
         if(colorDestino!=null){
             if(Math.abs(cDestino-cOrigen)==1){
                 if(colorOrigen.equals("blanco")&& fDestino==fOrigen-1 && colorDestino.equals("negro")){
                     movValido=true;
-                }
+        }
                 else if(colorOrigen.equals("negro")&& fDestino==fOrigen+1 && colorDestino.equals("blanco")){
                     movValido=true;
-                }
+        }
             }
         }
         return movValido;
     }
-    private boolean moverTorre(ImageView destino){
-         Ficha origen = (Ficha) fichaSeleccionada.getUserData();
-    Ficha destinop = (Ficha) destino.getUserData();
-    int fOrigen = origen.getFila();
-    int cOrigen = origen.getColumna();
-    int fDestino = destinop.getFila();
-    int cDestino = destinop.getColumna();
-
-    // Verificar si la torre se mueve horizontalmente
-    if (fOrigen == fDestino && cOrigen != cDestino) {
-        int pasoColumna;
-        if (cDestino - cOrigen > 0) {
-            pasoColumna = 1;
-        } else {
-            pasoColumna = -1;
-        }
-
-        int columnaActual = cOrigen + pasoColumna;
-        while (columnaActual != cDestino) {
-            ImageView casillaIntermedia = imageViews[fOrigen][columnaActual];
-            if (casillaIntermedia.getImage() != null) {
-                return false; // Movimiento no válido si hay una casilla ocupada
-            }
-            columnaActual += pasoColumna;
-        }
-        return true; // Movimiento válido en línea horizontal
+    
+    private void nuevaFichaPromocioPeon(String nuevaPieza, Image img, Ficha origen) {
+        fichaSeleccionada.setImage(img);
+        origen.setTipo(nuevaPieza);
     }
 
-    // Verificar si la torre se mueve verticalmente
-    if (cOrigen == cDestino && fOrigen != fDestino) {
-        int pasoFila;
-        if (fDestino - fOrigen > 0) {
-            pasoFila = 1;
-        } else {
-            pasoFila = -1;
-        }
+    private boolean moverTorre(ImageView destino) {
+        Ficha origen = (Ficha) fichaSeleccionada.getUserData();
+        Ficha destinop = (Ficha) destino.getUserData();
+        int fOrigen = origen.getFila();
+        int cOrigen = origen.getColumna();
+        int fDestino = destinop.getFila();
+        int cDestino = destinop.getColumna();
 
-        int filaActual = fOrigen + pasoFila;
-        while (filaActual != fDestino) {
-            ImageView casillaIntermedia = imageViews[filaActual][cOrigen];
-            if (casillaIntermedia.getImage() != null) {
-                return false; // Movimiento no válido si hay una casilla ocupada
+        // Verificar si la torre se mueve horizontalmente
+        if (fOrigen == fDestino && cOrigen != cDestino) {
+            int pasoColumna;
+            if (cDestino - cOrigen > 0) {
+                pasoColumna = 1;
+            } else {
+                pasoColumna = -1;
             }
-            filaActual += pasoFila;
-        }
-        return true; // Movimiento válido en línea vertical
-    }
 
-    return false;
+            int columnaActual = cOrigen + pasoColumna;
+            while (columnaActual != cDestino) {
+                ImageView casillaIntermedia = imageViews[fOrigen][columnaActual];
+                if (casillaIntermedia.getImage() != null) {
+                    return false; // Movimiento no válido si hay una casilla ocupada
+                }
+                columnaActual += pasoColumna;
+            }
+            return true; // Movimiento válido en línea horizontal
+        }
+
+        // Verificar si la torre se mueve verticalmente
+        if (cOrigen == cDestino && fOrigen != fDestino) {
+            int pasoFila;
+            if (fDestino - fOrigen > 0) {
+                pasoFila = 1;
+            } else {
+                pasoFila = -1;
+            }
+
+            int filaActual = fOrigen + pasoFila;
+            while (filaActual != fDestino) {
+                ImageView casillaIntermedia = imageViews[filaActual][cOrigen];
+                if (casillaIntermedia.getImage() != null) {
+                    return false; // Movimiento no válido si hay una casilla ocupada
+                }
+                filaActual += pasoFila;
+            }
+            return true; // Movimiento válido en línea vertical
+        }
+
+        return false;
     }
     private boolean moverCaballo(ImageView destino) {
-    Ficha origen = (Ficha) fichaSeleccionada.getUserData();
-    Ficha destinop = (Ficha) destino.getUserData();
-    int fOrigen = origen.getFila();
-    int cOrigen = origen.getColumna();
-    int fDestino = destinop.getFila();
-    int cDestino = destinop.getColumna();
+        Ficha origen = (Ficha) fichaSeleccionada.getUserData();
+        Ficha destinop = (Ficha) destino.getUserData();
+        int fOrigen = origen.getFila();
+        int cOrigen = origen.getColumna();
+        int fDestino = destinop.getFila();
+        int cDestino = destinop.getColumna();
 
-    // Verificar si el movimiento del caballo es válido
-    int filaDif = Math.abs(fDestino - fOrigen);
-    int colDif = Math.abs(cDestino - cOrigen);
+        // Verificar si el movimiento del caballo es válido
+        int filaDif = Math.abs(fDestino - fOrigen);
+        int colDif = Math.abs(cDestino - cOrigen);
 
     return (filaDif == 2 && colDif == 1) || (filaDif == 1 && colDif == 2);
 }
@@ -730,119 +736,119 @@ public class TableroMController implements Initializable {
         }
         else if(ficha.getTipo().equals("rey")){
             casillasValidas= calcularCasillasValidasRey(im);
-        }
+                }
         return casillasValidas;
     }
     private boolean[][] calcularCasillasValidasPeon(ImageView im) {
-    boolean[][] casillasValidas = new boolean[8][8];
-    Ficha ficha = (Ficha) im.getUserData();
-    int row = ficha.getFila();
-    int col = ficha.getColumna();
+        boolean[][] casillasValidas = new boolean[8][8];
+        Ficha ficha = (Ficha) im.getUserData();
+        int row = ficha.getFila();
+        int col = ficha.getColumna();
 
-    // Para peones blancos
-    if (ficha.getColor().equals("blanco")) {
-        // Movimiento hacia adelante
-        if (row > 1 && imageViews[row - 1][col].getImage() == null) {
-            casillasValidas[row - 1][col] = true;
-        }
+        // Para peones blancos
+        if (ficha.getColor().equals("blanco")) {
+            // Movimiento hacia adelante
+            if (row > 1 && imageViews[row - 1][col].getImage() == null) {
+                casillasValidas[row - 1][col] = true;
+            }
         if(row==6 && imageViews[row-2][col].getImage()==null && imageViews[row - 1][col].getImage() == null){
-            casillasValidas[row - 2][col] = true;
+                casillasValidas[row - 2][col] = true;
+            }
+            // Movimiento diagonal izquierda para comer
+            if (row > 0 && col > 0 && imageViews[row - 1][col - 1].getImage() != null && !fichaBlanca(imageViews[row - 1][col - 1])) {
+                casillasValidas[row - 1][col - 1] = true;
+            }
+            // Movimiento diagonal derecha para comer
+            if (row > 0 && col < 7 && imageViews[row - 1][col + 1].getImage() != null && !fichaBlanca(imageViews[row - 1][col + 1])) {
+                casillasValidas[row - 1][col + 1] = true;
+            }
         }
-        // Movimiento diagonal izquierda para comer
-        if (row > 0 && col > 0 && imageViews[row - 1][col - 1].getImage() != null && !fichaBlanca(imageViews[row - 1][col - 1])) {
-            casillasValidas[row - 1][col - 1] = true;
-        }
-        // Movimiento diagonal derecha para comer
-        if (row > 0 && col < 7 && imageViews[row - 1][col + 1].getImage() != null && !fichaBlanca(imageViews[row - 1][col + 1])) {
-            casillasValidas[row - 1][col + 1] = true;
-        }
-    }
 
-    // Para peones negros
-    if (ficha.getColor().equals("negro")) {
-        // Movimiento hacia adelante
-        if (row < 6 && imageViews[row + 1][col].getImage() == null) {
-            casillasValidas[row + 1][col] = true;
-        }
+        // Para peones negros
+        if (ficha.getColor().equals("negro")) {
+            // Movimiento hacia adelante
+            if (row < 6 && imageViews[row + 1][col].getImage() == null) {
+                casillasValidas[row + 1][col] = true;
+            }
         if(row==1 && imageViews[row+2][col].getImage()==null&& imageViews[row + 1][col].getImage() == null){
-            casillasValidas[row + 2][col] = true;
+                casillasValidas[row + 2][col] = true;
+            }
+            // Movimiento diagonal izquierda para comer
+            if (row > 0 && col > 0 && imageViews[row + 1][col - 1].getImage() != null && !fichaNegra(imageViews[row + 1][col - 1])) {
+                casillasValidas[row + 1][col - 1] = true;
+            }
+            // Movimiento diagonal derecha para comer
+            if (row > 0 && col < 7 && imageViews[row + 1][col + 1].getImage() != null && !fichaNegra(imageViews[row + 1][col + 1])) {
+                casillasValidas[row + 1][col + 1] = true;
+            }
         }
-        // Movimiento diagonal izquierda para comer
-        if (row > 0 && col > 0 && imageViews[row + 1][col - 1].getImage() != null && !fichaNegra(imageViews[row + 1][col - 1])) {
-            casillasValidas[row + 1][col - 1] = true;
-        }
-        // Movimiento diagonal derecha para comer
-        if (row > 0 && col < 7 && imageViews[row + 1][col + 1].getImage() != null && !fichaNegra(imageViews[row + 1][col + 1])) {
-            casillasValidas[row + 1][col + 1] = true;
-        }
-    }
 
-    return casillasValidas;
-}
+        return casillasValidas;
+    }
     private boolean[][] calcularCasillasValidasTorre(ImageView im) {
-    boolean[][] casillasValidas = new boolean[8][8];
-    Ficha ficha = (Ficha) im.getUserData();
-    int row = ficha.getFila();
-    int col = ficha.getColumna();
+        boolean[][] casillasValidas = new boolean[8][8];
+        Ficha ficha = (Ficha) im.getUserData();
+        int row = ficha.getFila();
+        int col = ficha.getColumna();
 
-    // Movimiento hacia arriba
-    for (int i = row - 1; i >= 0; i--) {
-        if (imageViews[i][col].getImage() == null) {
-            casillasValidas[i][col] = true;
-        } else {
-            // La torre no puede pasar a través de fichas
-            Ficha f2 = (Ficha) imageViews[i][col].getUserData();
-            if (!ficha.getColor().equals(f2.getColor())) {
+        // Movimiento hacia arriba
+        for (int i = row - 1; i >= 0; i--) {
+            if (imageViews[i][col].getImage() == null) {
                 casillasValidas[i][col] = true;
+            } else {
+                // La torre no puede pasar a través de fichas
+                Ficha f2 = (Ficha) imageViews[i][col].getUserData();
+                if (!ficha.getColor().equals(f2.getColor())) {
+                    casillasValidas[i][col] = true;
+                }
+                break;
             }
-            break;
         }
-    }
 
-    // Movimiento hacia abajo
-    for (int i = row + 1; i < 8; i++) {
-        if (imageViews[i][col].getImage() == null) {
-            casillasValidas[i][col] = true;
-        } else {
-            // La torre no puede pasar a través de fichas
-            Ficha f2 = (Ficha) imageViews[i][col].getUserData();
-            if (!ficha.getColor().equals(f2.getColor())) {
+        // Movimiento hacia abajo
+        for (int i = row + 1; i < 8; i++) {
+            if (imageViews[i][col].getImage() == null) {
                 casillasValidas[i][col] = true;
+            } else {
+                // La torre no puede pasar a través de fichas
+                Ficha f2 = (Ficha) imageViews[i][col].getUserData();
+                if (!ficha.getColor().equals(f2.getColor())) {
+                    casillasValidas[i][col] = true;
+                }
+                break;
             }
-            break;
         }
-    }
 
-    // Movimiento hacia la izquierda
-    for (int j = col - 1; j >= 0; j--) {
-        if (imageViews[row][j].getImage() == null) {
-            casillasValidas[row][j] = true;
-        } else {
-            // La torre no puede pasar a través de fichas
-            Ficha f2 = (Ficha) imageViews[row][j].getUserData();
-            if (!ficha.getColor().equals(f2.getColor())) {
+        // Movimiento hacia la izquierda
+        for (int j = col - 1; j >= 0; j--) {
+            if (imageViews[row][j].getImage() == null) {
                 casillasValidas[row][j] = true;
+            } else {
+                // La torre no puede pasar a través de fichas
+                Ficha f2 = (Ficha) imageViews[row][j].getUserData();
+                if (!ficha.getColor().equals(f2.getColor())) {
+                    casillasValidas[row][j] = true;
+                }
+                break;
             }
-            break;
         }
-    }
 
-    // Movimiento hacia la derecha
-    for (int j = col + 1; j < 8; j++) {
-        if (imageViews[row][j].getImage() == null) {
-            casillasValidas[row][j] = true;
-        } else {
-            // La torre no puede pasar a través de fichas
-            Ficha f2 = (Ficha) imageViews[row][j].getUserData();
-            if (!ficha.getColor().equals(f2.getColor())) {
+        // Movimiento hacia la derecha
+        for (int j = col + 1; j < 8; j++) {
+            if (imageViews[row][j].getImage() == null) {
                 casillasValidas[row][j] = true;
+            } else {
+                // La torre no puede pasar a través de fichas
+                Ficha f2 = (Ficha) imageViews[row][j].getUserData();
+                if (!ficha.getColor().equals(f2.getColor())) {
+                    casillasValidas[row][j] = true;
+                }
+                break;
             }
-            break;
         }
-    }
 
-    return casillasValidas;
-}
+        return casillasValidas;
+    }
 private boolean[][] calcularCasillasValidasCaballo(ImageView im) {
     boolean[][] casillasValidas = new boolean[8][8];
     Ficha ficha = (Ficha) im.getUserData();
@@ -1000,10 +1006,10 @@ private boolean[][] calcularCasillasValidasRey(ImageView im) {
 }
 
 // Método para verificar si dos fichas tienen el mismo color
-private boolean esMismaFichaColor(Ficha ficha1, ImageView ficha2) {
-    Ficha fichaEnCasilla = (Ficha) ficha2.getUserData();
-    return ficha1.getColor().equals(fichaEnCasilla.getColor());
-}
+    private boolean esMismaFichaColor(Ficha ficha1, ImageView ficha2) {
+        Ficha fichaEnCasilla = (Ficha) ficha2.getUserData();
+        return ficha1.getColor().equals(fichaEnCasilla.getColor());
+    }
 
 
 

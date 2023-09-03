@@ -1,4 +1,22 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+C:\Users\Scarlet Cevallos\Desktop\Proyecto 2do parcial\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\chess\SecondaryController.java
+C:\Users\Scarlet Cevallos\Desktop\Proyecto 2do parcial\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\controllers\imageView.java
+C:\Users\Scarlet Cevallos\Desktop\Proyecto 2do parcial\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\module-info.java
+C:\Users\Scarlet Cevallos\Desktop\Proyecto 2do parcial\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\chess\Chess.java
+C:\Users\Scarlet Cevallos\Desktop\Proyecto 2do parcial\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\controllers\ChoosePieceTypeController.java
+C:\Users\Scarlet Cevallos\Desktop\Proyecto 2do parcial\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\chess\GamePhase.java
+C:\Users\Scarlet Cevallos\Desktop\Proyecto 2do parcial\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\model\Alfil.java
+C:\Users\Scarlet Cevallos\Desktop\Proyecto 2do parcial\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\controllers\TableroMController.java
+C:\Users\Scarlet Cevallos\Desktop\Proyecto 2do parcial\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\controllers\ChessController.java
+C:\Users\Scarlet Cevallos\Desktop\Proyecto 2do parcial\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\model\Rey.java
+C:\Users\Scarlet Cevallos\Desktop\Proyecto 2do parcial\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\chess\PrimaryController.java
+C:\Users\Scarlet Cevallos\Desktop\Proyecto 2do parcial\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\model\Peon.java
+C:\Users\Scarlet Cevallos\Desktop\Proyecto 2do parcial\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\chess\App.java
+=======
+=======
 C:\Users\HP\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\model\Rey.java
+>>>>>>> c7f9369c2cccd1dd8c1768c8fc61d09c71737ebe
 C:\Users\HP\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\chess\GamePhase.java
 C:\Users\HP\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\chess\PrimaryController.java
 C:\Users\HP\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\chess\App.java
@@ -12,4 +30,8 @@ C:\Users\HP\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol
 C:\Users\HP\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\controllers\ChoosePieceTypeController.java
 C:\Users\HP\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\chess\Jugador.java
 C:\Users\HP\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\chess\SecondaryController.java
+<<<<<<< HEAD
+>>>>>>> a4473bb287cc38a3cd1cc78d671d89922dac04bd
+=======
 C:\Users\HP\Proyecto-2Parcial\Proyecto-POO-G1-2\Chess\src\main\java\ec\edu\espol\model\Alfil.java
+>>>>>>> c7f9369c2cccd1dd8c1768c8fc61d09c71737ebe
