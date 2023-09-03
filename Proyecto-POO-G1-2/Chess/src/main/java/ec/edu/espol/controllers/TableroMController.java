@@ -31,7 +31,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 
-
 /**
  * FXML Controller class
  *
@@ -49,7 +48,7 @@ public class TableroMController implements Initializable {
     private GridPane gridPane;
     @FXML
     private Label turnoLabel;
-    
+
     private ImageView[][] imageViews = new ImageView[8][8];
     private Button[][] buttons = new Button[8][8];
     private int currentRow, currentCol; // Almacena la ubicación actual de la pieza
@@ -73,17 +72,19 @@ public class TableroMController implements Initializable {
         mensajeTurno();
     }
     
-    private void inicializarTablero(){
-        for(int row=0; row<8;row++){
-            for(int col=0; col<8; col++){
-                Button b= new Button();
+
+
+    private void inicializarTablero() {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Button b = new Button();
                 b.setPrefSize(60, 60);
-                ImageView im= new ImageView();
-                imageViews[row][col]= im;
+                ImageView im = new ImageView();
+                imageViews[row][col] = im;
                 b.setGraphic(im);
                 b.setStyle("-fx-border-color: black; -fx-border-width: 20px; -fx-padding: 5px;");
-                
-                if((row+col)%2==0){
+
+                if ((row + col) % 2 == 0) {
                     b.setStyle("-fx-base: white;-fx-border-color: black; -fx-border-width: 1.5px; ");
                 }
                 else{
@@ -99,7 +100,6 @@ public class TableroMController implements Initializable {
                 } 
                 else if (row == 7 && (col == 0 || col==7)) {
                 setImage(im, "/fichas/torreblanco.png",40,50);
-                im.setUserData("blanco");
                 im.setUserData(new Ficha("torre","blanco",row,col));
                 } 
                 else if (row == 0 && (col == 1 || col == 6)) {
@@ -143,21 +143,21 @@ public class TableroMController implements Initializable {
                 im.setUserData(new Ficha("peon","blanco",row,col));
                 }
                 b.setOnMouseClicked(this::handleButtonClick);
-        }
-        borderPane.setCenter(gridPane);
+            }
+            borderPane.setCenter(gridPane);
 
-    }
+        }
     }
     private void setImage(ImageView imageView, String imagePath, double width, double height) {
-    InputStream imageStream = getClass().getResourceAsStream(imagePath);
-    if (imageStream != null) {
-        Image image = new Image(imageStream);
-        imageView.setImage(image);
-        imageView.setFitWidth(width); // Ajusta el ancho de la imagen
-        imageView.setFitHeight(height); // Ajusta la altura de la imagen
+        InputStream imageStream = getClass().getResourceAsStream(imagePath);
+        if (imageStream != null) {
+            Image image = new Image(imageStream);
+            imageView.setImage(image);
+            imageView.setFitWidth(width); // Ajusta el ancho de la imagen
+            imageView.setFitHeight(height); // Ajusta la altura de la imagen
+        }
     }
-}
-   
+
     private void mensajeTurno() {
         Jugador jugadoractual=null;
         for(Jugador j: players){
@@ -173,15 +173,15 @@ public class TableroMController implements Initializable {
         String mturno= "Jugador "+ jugadoractual.getId()+ " "+"Turno N° "+turno;
         turnoLabel.setText(mturno);
     }
-    private void iniciarNuevoTurno(){
+
+    private void iniciarNuevoTurno() {
         turno++;
-        if(turno%2==0){
-            tipoFicha="Negras";
+        if (turno % 2 == 0) {
+            tipoFicha = "Negras";
+        } else {
+            tipoFicha = "Blancas";
         }
-        else{
-            tipoFicha="Blancas";
-        }
-        currentPhase=GamePhase.STANDBY;
+        currentPhase = GamePhase.STANDBY;
         mensajeTurno();
     }
     private boolean turnoJugador(ImageView imv){
@@ -248,8 +248,8 @@ public class TableroMController implements Initializable {
 
 // Método para verificar si la imagen es la imagen de una ficha válida
     private boolean esImagenFichaValida(ImageView imageView) {
-    Image image = imageView.getImage();
-    return image != null;
+        Image image = imageView.getImage();
+        return image != null;
     }
     private void moverFicha(ImageView destino){
         if (fichaSeleccionada!=null && destino != null){
@@ -261,50 +261,52 @@ public class TableroMController implements Initializable {
             destino.setUserData(f);
             fichaSeleccionada.setImage(null);
         }
-        fichaSeleccionada=null;
+        fichaSeleccionada = null;
     }
     private void mostrarMensaje(String mensaje) {
-    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    alert.setTitle("Información");
-    alert.setHeaderText(null);
-    alert.setContentText(mensaje);
-    alert.showAndWait();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Información");
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
-    private void resaltarCasillasValidas(boolean[][] casillas){
-        for(int row=0; row<8; row++){
-            for(int col=0; col<8; col++){
-                if(casillas[row][col]){
+
+    private void resaltarCasillasValidas(boolean[][] casillas) {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                if (casillas[row][col]) {
                     buttons[row][col].setStyle("-fx-base: lightblue;-fx-border-color: black; -fx-border-width: 1.5px;");
                 }
             }
         }
     }
     private void resetearColorCasillas() {
-    for (int row = 0; row < 8; row++) {
-        for (int col = 0; col < 8; col++) {
-            Button casilla = buttons[row][col];
-            if ((row + col) % 2 == 0) {
-                casilla.setStyle("-fx-base: white;-fx-border-color: black; -fx-border-width: 1.5px;");
-            } else {
-                casilla.setStyle("-fx-base: lightgoldenrodyellow;-fx-border-color: black; -fx-border-width: 1.5px;");
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Button casilla = buttons[row][col];
+                if ((row + col) % 2 == 0) {
+                    casilla.setStyle("-fx-base: white;-fx-border-color: black; -fx-border-width: 1.5px;");
+                } else {
+                    casilla.setStyle("-fx-base: lightgoldenrodyellow;-fx-border-color: black; -fx-border-width: 1.5px;");
+                }
             }
         }
     }
-}
 
-    private boolean[][] calcularCasillasValidas(ImageView im){
-        boolean[][] casillasValidas= new boolean[8][8];
-        for(int row=0;row<8;row++){
-            for(int col=0;col<8;col++){
-                Button casilla= buttons[row][col];
-                ImageView ic= imageViews[row][col];
-                Image img= ic.getImage();
-                casillasValidas[row][col]=(img==null);
+    private boolean[][] calcularCasillasValidas(ImageView im) {
+        boolean[][] casillasValidas = new boolean[8][8];
+        
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Button casilla = buttons[row][col];
+                ImageView ic = imageViews[row][col];
+                Image img = ic.getImage();
+                casillasValidas[row][col] = (img == null);
             }
         }
         return casillasValidas;
     }
-    
+
 }
 //    @FXML
 //    private void handlePieceClick(MouseEvent event) {
@@ -326,4 +328,4 @@ public class TableroMController implements Initializable {
 //            selectedPiece = null;
 //        }
 //    }
-    
+
