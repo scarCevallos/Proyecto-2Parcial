@@ -58,7 +58,10 @@ public class TableroMController implements Initializable {
     private boolean[][] casillasValidas= new boolean[8][8];
     private int turno=1;
     private ArrayList<Jugador> players;
-    
+    private String colorActual;
+    private String colorEnemigo;
+    private int idJugador;
+    private int idEnemigo;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     } 
@@ -165,10 +168,28 @@ public class TableroMController implements Initializable {
         for(Jugador j: players){
             if(turno%2==0 && (j.getTipoFicha().equalsIgnoreCase("Negras"))){
                 jugadoractual=j;
+                colorActual= "negro";
+                colorEnemigo= "blanco";
+                idJugador=j.getId();
+                if(idJugador==1){
+                    idEnemigo=2;
+                }
+                else{
+                    idEnemigo=1;
+                }
                 break;
             }
             else if(turno%2!=0 && (!j.getTipoFicha().equalsIgnoreCase("Negras"))){
                jugadoractual=j;
+               colorActual= "blanco";
+               colorEnemigo="negro";
+               idJugador=j.getId();
+               if(idJugador==1){
+                    idEnemigo=2;
+                }
+                else{
+                    idEnemigo=1;
+                }
                break;
             }
         }
@@ -199,6 +220,67 @@ public class TableroMController implements Initializable {
         }
         return (jugadoractual==jblanco && fichaBlanca(imv))||(jugadoractual==jnegro && fichaNegra(imv));
     }
+    
+    private Ficha obtenerRey(ImageView[][] tablero, String color) {
+    Ficha rey = null;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            ImageView casilla = tablero[i][j];
+            if (casilla.getImage() != null) {
+                Ficha f = (Ficha) casilla.getUserData();
+                if (f != null && f.getTipo().equals("rey") && f.getColor().equals(color)) {
+                    rey = f;
+                    break;
+                }
+            }
+        }
+    }
+    return rey;
+}
+
+    private ArrayList<ImageView> obtenerFichasOponente(String color){
+        ArrayList<ImageView> fichasOponente= new ArrayList<>();
+        for(int i=0;i<8;i++){
+            for(int j=0;j<8;j++){
+                ImageView casilla= imageViews[i][j];
+                if(casilla.getImage()!=null){
+                    Ficha f=(Ficha) casilla.getUserData();
+                    if(!f.getColor().equals(color)){
+                        fichasOponente.add(casilla);
+                    }
+                }
+            }
+        }
+        return fichasOponente;
+    }
+    private boolean jaque(ImageView[][] tablero, String color) {
+    boolean enJaque = false;
+        Ficha rey = obtenerRey(tablero,color);
+        System.out.println(colorActual);
+        int fRey = rey.getFila();
+        int cRey = rey.getColumna();
+        String colorRey = rey.getColor();
+        ArrayList<ImageView> fichasOponente = obtenerFichasOponente(colorRey);
+        ArrayList<ImageView> casillasAtacadas = new ArrayList<>();
+        for (ImageView im : fichasOponente) {
+            boolean[][] casillasValidas = calcularCasillasValidas(im);
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (casillasValidas[i][j]) {
+                        casillasAtacadas.add(tablero[i][j]);
+                    }
+                }
+            }
+        }
+        for (ImageView casilla : casillasAtacadas) {
+            if (casilla.equals(tablero[fRey][cRey])) {
+                enJaque = true;
+                break;
+            }
+    }
+    return enJaque;
+}
+
     private boolean fichaBlanca(ImageView imv){
         Ficha userData= (Ficha) imv.getUserData();
         if(userData.getColor()==null){
@@ -238,24 +320,75 @@ public class TableroMController implements Initializable {
                     if(f.getTipo().equals("peon")){
                         if(moverPeon(imageView)){
                             moverFicha(imageView);
+                            if(jaque(imageViews,colorActual)){
+                                mostrarMensaje("Jugador "+idJugador+" estas en jaque");
+                            }
+                            else if(jaque(imageViews,colorEnemigo)){
+                                mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
+                            }
                             iniciarNuevoTurno();
+                            
                         }
                     }
                     else if(f.getTipo().equals("torre")){
                         if(moverTorre(imageView)){
                             moverFicha(imageView);
+                            if(jaque(imageViews,colorActual)){
+                                mostrarMensaje("Jugador "+idJugador+" estas en jaque");
+                            }
+                            else if(jaque(imageViews,colorEnemigo)){
+                                mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
+                            }
                             iniciarNuevoTurno();
                         }
                     }
                     else if(f.getTipo().equals("caballo")){
                         if(moverCaballo(imageView)){
                             moverFicha(imageView);
+                            if(jaque(imageViews,colorActual)){
+                                mostrarMensaje("Jugador "+idJugador+" estas en jaque");
+                            }
+                            else if(jaque(imageViews,colorEnemigo)){
+                                mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
+                            }
                             iniciarNuevoTurno();
                         }
                     }
-                    else{
-                        moverFicha(imageView);
-                        iniciarNuevoTurno();
+                    else if(f.getTipo().equals("alfil")){
+                        if(moverAlfil(imageView)){
+                            moverFicha(imageView);
+                            if(jaque(imageViews,colorActual)){
+                                mostrarMensaje("Jugador "+idJugador+" estas en jaque");
+                            }
+                            else if(jaque(imageViews,colorEnemigo)){
+                                mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
+                            }
+                            iniciarNuevoTurno();
+                        }
+                    }
+                    else if(f.getTipo().equals("reina")){
+                        if(moverReina(imageView)){
+                            moverFicha(imageView);
+                            if(jaque(imageViews,colorActual)){
+                                mostrarMensaje("Jugador "+idJugador+" estas en jaque");
+                            }
+                            else if(jaque(imageViews,colorEnemigo)){
+                                mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
+                            }
+                            iniciarNuevoTurno();
+                        }
+                    }       
+                    else if(f.getTipo().equals("rey")){
+                        if(moverRey(imageView)){
+                            moverFicha(imageView);
+                            if(jaque(imageViews,colorActual)){
+                                mostrarMensaje("Jugador "+idJugador+" estas en jaque");
+                            }
+                            else if(jaque(imageViews,colorEnemigo)){
+                                mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
+                            }
+                            iniciarNuevoTurno();
+                        }
                     }
                     resetearColorCasillas();
                     
@@ -298,8 +431,6 @@ public class TableroMController implements Initializable {
         int cOrigen= origen.getColumna();
         int fDestino= destinop.getFila();
         int cDestino = destinop.getColumna();
-        System.out.println(fOrigen);
-        System.out.println(fDestino);
         String colorOrigen = origen.getColor();
         String colorDestino= null;
         if(destinop.getColor()!=null){
@@ -412,6 +543,128 @@ public class TableroMController implements Initializable {
 
     return (filaDif == 2 && colDif == 1) || (filaDif == 1 && colDif == 2);
 }
+    private boolean moverAlfil(ImageView destino){
+        Ficha origen=(Ficha) fichaSeleccionada.getUserData();
+        Ficha destinop= (Ficha) destino.getUserData();
+        int fOrigen = origen.getFila();
+        int cOrigen = origen.getColumna();
+        int fDestino = destinop.getFila();
+        int cDestino = destinop.getColumna();
+        int filaDif= Math.abs(fDestino-fOrigen);
+        int colDif= Math.abs(cDestino-cOrigen);
+        boolean movValido= false;
+        if(filaDif==colDif){
+            int pasoFila=(fDestino-fOrigen)/filaDif;
+            int pasoColumna=(cDestino - cOrigen)/colDif;
+            int filaActual= fOrigen+pasoFila;
+            int columnaActual = cOrigen +pasoColumna;
+            while(filaActual != fDestino && columnaActual !=cDestino){
+                ImageView casillaIntermedia= imageViews[filaActual][columnaActual];
+                if(casillaIntermedia.getImage()!=null){
+                    movValido=false;
+                }
+                filaActual+=pasoFila;
+                columnaActual+=pasoColumna;
+            }
+            movValido=true;
+        }
+        else{
+            movValido=false;
+        }
+        return movValido;
+    }
+    private boolean moverReina(ImageView destino){
+        Ficha origen = (Ficha) fichaSeleccionada.getUserData();
+        Ficha destinop = (Ficha) destino.getUserData();
+        int fOrigen = origen.getFila();
+        int cOrigen = origen.getColumna();
+        int fDestino = destinop.getFila();
+        int cDestino = destinop.getColumna();
+        boolean movValido=false;
+        boolean movTorre=moverTorre(destino);
+        boolean movAlfil= moverAlfil(destino);
+        if (movAlfil) {
+            int pasoFila, pasoColumna;
+            if (fDestino > fOrigen) {
+                pasoFila = 1;
+            } else if (fDestino < fOrigen) {
+                pasoFila = -1;
+            } else {
+                pasoFila = 0;
+            }
+            if (cDestino > cOrigen) {
+                pasoColumna = 1;
+            } else if (cDestino < cOrigen) {
+                pasoColumna = -1;
+            } else {
+                pasoColumna = 0;
+            }
+            int filaActual = fOrigen + pasoFila;
+            int columnaActual = cOrigen + pasoColumna;
+
+            while (filaActual != fDestino && columnaActual != cDestino) {
+                if (imageViews[filaActual][columnaActual].getImage() != null) {
+                    return false; // Hay una ficha en el camino diagonal
+                }
+                filaActual += pasoFila;
+                columnaActual += pasoColumna;
+                }
+        }
+        if (movTorre) {
+        int pasoFila = 0;
+        int pasoColumna = 0;
+
+        if (fDestino > fOrigen) {
+            pasoFila = 1;
+        } else if (fDestino < fOrigen) {
+            pasoFila = -1;
+        }
+
+        if (cDestino > cOrigen) {
+            pasoColumna = 1;
+        } else if (cDestino < cOrigen) {
+            pasoColumna = -1;
+        }
+
+        int filaActual = fOrigen + pasoFila;
+        int columnaActual = cOrigen + pasoColumna;
+
+        while (filaActual != fDestino || columnaActual != cDestino) {
+            if (imageViews[filaActual][columnaActual].getImage() != null) {
+                return false; // Hay una ficha en el camino
+            }
+            filaActual += pasoFila;
+            columnaActual += pasoColumna;
+        }
+    }
+        if(movTorre||movAlfil){
+            movValido=true;
+        }
+        return movValido;
+    }
+    private boolean moverRey(ImageView destino) {
+    Ficha origen = (Ficha) fichaSeleccionada.getUserData();
+    Ficha destinop = (Ficha) destino.getUserData();
+    int fOrigen = origen.getFila();
+    int cOrigen = origen.getColumna();
+    int fDestino = destinop.getFila();
+    int cDestino = destinop.getColumna();
+    // Verificar si el movimiento es válido para el rey
+    int filaDif = Math.abs(fDestino - fOrigen);
+    int colDif = Math.abs(cDestino - cOrigen);
+
+    // El rey puede moverse una casilla en cualquier dirección
+    if ((filaDif == 1 && colDif == 0) || (filaDif == 0 && colDif == 1) || (filaDif == 1 && colDif == 1)) {
+        // Verificar si la casilla de destino está vacía o tiene una ficha del color opuesto
+        ImageView casillaDestino = imageViews[fDestino][cDestino];
+        if (casillaDestino.getImage() == null || !esMismaFichaColor(origen, casillaDestino)) {
+            return true; // Movimiento válido para el rey
+        }
+    }
+
+    return false; // Movimiento inválido para el rey
+}
+
 
     private void moverFicha(ImageView destino){
         if (fichaSeleccionada!=null && destino != null){
@@ -469,15 +722,14 @@ public class TableroMController implements Initializable {
         else if(ficha.getTipo().equals("caballo")){
             casillasValidas=calcularCasillasValidasCaballo(im);
         }
-        else{
-            for (int row = 0; row < 8; row++) {
-                for (int col = 0; col < 8; col++) {
-                    Button casilla = buttons[row][col];
-                    ImageView ic = imageViews[row][col];
-                    Image img = ic.getImage();
-                    casillasValidas[row][col] = (img == null);
-                }
-            }
+        else if(ficha.getTipo().equals("alfil")){
+            casillasValidas=calcularCasillasValidasAlfil(im);
+        }
+        else if(ficha.getTipo().equals("reina")){
+            casillasValidas=calcularCasillasValidasReina(im);
+        }
+        else if(ficha.getTipo().equals("rey")){
+            casillasValidas= calcularCasillasValidasRey(im);
         }
         return casillasValidas;
     }
@@ -610,6 +862,127 @@ private boolean[][] calcularCasillasValidasCaballo(ImageView im) {
     };
 
     for (int[] movimiento : movimientosCaballo) {
+        int newRow = row + movimiento[0];
+        int newCol = col + movimiento[1];
+
+        // Verificar si la nueva posición está dentro del tablero
+        if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+            // Verificar si la casilla está vacía o tiene una ficha del color opuesto
+            ImageView casilla = imageViews[newRow][newCol];
+            if (casilla.getImage() == null || !esMismaFichaColor(ficha, casilla)) {
+                casillasValidas[newRow][newCol] = true;
+            }
+        }
+    }
+
+    return casillasValidas;
+}
+private boolean[][] calcularCasillasValidasAlfil(ImageView im){
+    boolean[][] casillasValidas= new boolean[8][8];
+    Ficha f= (Ficha) im.getUserData();
+    int row= f.getFila();
+    int col= f.getColumna();
+    int i= row-1;
+    int j= col+1;
+    while(i>=0 && j<8){
+        if(imageViews[i][j].getImage()==null){
+            casillasValidas[i][j]=true;
+        }
+        else{
+            Ficha f2=(Ficha) imageViews[i][j].getUserData();
+            if(!f.getColor().equals(f2.getColor())){
+                casillasValidas[i][j]=true;
+            }
+            break;
+        }
+        i--;
+        j++;
+    }
+    i= row-1;
+    j= col-1;
+    while(i>=0 && j>=0){
+        if(imageViews[i][j].getImage()==null){
+            casillasValidas[i][j]=true;
+        }
+        else{
+            Ficha f2=(Ficha) imageViews[i][j].getUserData();
+            if(!f.getColor().equals(f2.getColor())){
+                casillasValidas[i][j]=true;
+            }
+            break;
+        }
+        i--;
+        j--;
+    }
+    i= row+1;
+    j= col+1;
+    while(i<8 && j<8){
+        if(imageViews[i][j].getImage()==null){
+            casillasValidas[i][j]=true;
+        }
+        else{
+            Ficha f2=(Ficha) imageViews[i][j].getUserData();
+            if(!f.getColor().equals(f2.getColor())){
+                casillasValidas[i][j]=true;
+            }
+            break;
+        }
+        i++;
+        j++;
+    }
+    i= row+1;
+    j= col-1;
+    while(i<8 && j>=0){
+        if(imageViews[i][j].getImage()==null){
+            casillasValidas[i][j]=true;
+        }
+        else{
+            Ficha f2=(Ficha) imageViews[i][j].getUserData();
+            if(!f.getColor().equals(f2.getColor())){
+                casillasValidas[i][j]=true;
+            }
+            break;
+        }
+        i--;
+        j++;
+    }
+    return casillasValidas;
+}
+private boolean[][] calcularCasillasValidasReina(ImageView im) {
+    boolean[][] casillasValidas = new boolean[8][8];
+    Ficha ficha = (Ficha) im.getUserData();
+    int row = ficha.getFila();
+    int col = ficha.getColumna();
+
+    // Calcular casillas válidas como una torre
+    boolean[][] casillasTorre = calcularCasillasValidasTorre(im);
+
+    // Calcular casillas válidas como un alfil
+    boolean[][] casillasAlfil = calcularCasillasValidasAlfil(im);
+
+    // Combinar los resultados de casillas válidas de torre y alfil
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            casillasValidas[i][j] = casillasTorre[i][j] || casillasAlfil[i][j];
+        }
+    }
+
+    return casillasValidas;
+}
+
+private boolean[][] calcularCasillasValidasRey(ImageView im) {
+    boolean[][] casillasValidas = new boolean[8][8];
+    Ficha ficha = (Ficha) im.getUserData();
+    int row = ficha.getFila();
+    int col = ficha.getColumna();
+
+    // Movimientos válidos del rey
+    int[][] movimientosRey = {
+        {1, 0}, {-1, 0}, {0, 1}, {0, -1},
+        {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
+    };
+
+    for (int[] movimiento : movimientosRey) {
         int newRow = row + movimiento[0];
         int newCol = col + movimiento[1];
 
