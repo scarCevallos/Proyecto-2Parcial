@@ -4,6 +4,7 @@
  */
 package ec.edu.espol.controllers;
 
+import ec.edu.espol.chess.Jugador;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,11 +16,14 @@ import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -27,27 +31,25 @@ import javafx.stage.Stage;
  * @author HP
  */
 public class ChoosePieceTypeController implements Initializable {
+    private ArrayList<Jugador> jugadores;
     @FXML
-    private Label player1Label;
-    
+    private BorderPane bp;
     @FXML
-    private Label player2Label;
-    
-    private final StringProperty pieceType1 = new SimpleStringProperty();
-    private final StringProperty pieceType2 = new SimpleStringProperty();
+    private VBox vb;
 
-    public StringProperty pieceType1Property() {
-        return pieceType1;
+    public void setJugadores(ArrayList<Jugador> jugadores) {
+        this.jugadores = jugadores;
+        definirJugadores(jugadores);
     }
 
-    public StringProperty pieceType2Property() {
-        return pieceType2;
+    public ArrayList<Jugador> getJugadores() {
+        return jugadores;
     }
-
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        player1Label.textProperty().bind(Bindings.concat("Jugador 1: Tus fichas son ", pieceType1));
-        player2Label.textProperty().bind(Bindings.concat("Jugador 2: Tus fichas son ", pieceType2));
+        bp.setCenter(vb);
     }
     @FXML
     private void continuar(MouseEvent event) throws IOException {
@@ -56,9 +58,19 @@ public class ChoosePieceTypeController implements Initializable {
         Scene tableroScene = new Scene(tableroParent,680,480);
         TableroMController tableroController = loader.getController();
         tableroController.setScene(tableroScene);
+        tableroController.setPlayers(jugadores);
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(tableroScene);
         window.show();
+    }
+    public void definirJugadores(ArrayList<Jugador> players){
+        vb.getChildren().clear();
+        for(Jugador j: players){
+            Label lb = new Label();
+            lb.setText("Jugador "+j.getId()+": "+j.getTipoFicha());
+            lb.setAlignment(Pos.CENTER);
+            vb.getChildren().add(lb);
+        }
     }
 
     // ...
