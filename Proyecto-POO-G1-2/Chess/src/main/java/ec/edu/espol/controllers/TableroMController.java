@@ -331,10 +331,10 @@ public class TableroMController implements Initializable {
                 }
             }
         }
-        //promocionarPeon(destino);
+        
         if( (origen.getColor().equals("blanco") && destinop.getFila()==0) || (origen.getColor().equals("negro") && destinop.getFila()==7) ){
             System.out.println("Puede ser promocinado");
-            nuevaFichaPromocioPeon("torre", new Image("/fichas/" + "torre" + origen.getColor() + ".png"), origen);
+            nuevaFichaPromocioPeon("alfil", new Image("/fichas/" + "Alfil" + origen.getColor() + ".png"), origen);
         }
         return movValido;
     }
@@ -670,32 +670,6 @@ public class TableroMController implements Initializable {
         }
 
         return casillasValidas;
-    }
-
-    private void promocionarPeon(ImageView peon) {
-        Ficha peonFicha = (Ficha) peon.getUserData();
-        int filaPeon = peonFicha.getFila();
-        String colorPeon = peonFicha.getColor();
-
-        // Verificar si el peón ha llegado al extremo opuesto del tablero
-        if ((colorPeon.equals("blanco") && filaPeon == 0) || (colorPeon.equals("negro") && filaPeon == 7)) {
-            // Aquí debes implementar la lógica para que el jugador elija la promoción
-            // Puedes mostrar un diálogo de selección de promoción (reina, torre, alfil, caballo)
-            // y luego actualizar la imagen y los datos de la ficha del peón en consecuencia
-            // Por ejemplo:
-
-            // Mostrar un diálogo para que el jugador elija la promoción
-            // En este ejemplo, asumiremos que el jugador eligió una reina
-            String nuevaPieza = "torre"; // Aquí debes establecer el tipo de pieza elegido por el jugador
-
-            // Actualizar la imagen y los datos de la ficha del peón
-            peon.setImage(new Image("/fichas/" + nuevaPieza + colorPeon + ".png"));
-            peonFicha.setTipo(nuevaPieza);
-
-            // También puedes realizar cualquier otra lógica que desees aquí
-            // como por ejemplo, cambiar el comportamiento de la nueva pieza
-            // en futuros movimientos
-        }
     }
  
     private boolean[][] calcularCasillasValidasAlfil(ImageView im) {
