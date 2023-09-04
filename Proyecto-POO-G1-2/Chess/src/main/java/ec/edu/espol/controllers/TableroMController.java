@@ -7,19 +7,23 @@ package ec.edu.espol.controllers;
 import ec.edu.espol.chess.Ficha;
 import ec.edu.espol.chess.GamePhase;
 import ec.edu.espol.chess.Jugador;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -253,10 +257,57 @@ public class TableroMController implements Initializable {
         }
         return fichasOponente;
     }
+    private void mostrarVictoria(int idGanador){
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Victoria");
+        alert.setHeaderText("¡Jugador N° "+idGanador+" ha ganado!");
+        alert.setContentText("¿Desean jugar una revancha o salir del juego?");
+
+        ButtonType revanchaButton = new ButtonType("Revancha");
+        ButtonType salirButton = new ButtonType("Salir del juego");
+        ButtonType inicioButton = new ButtonType("Volver al menu de inicio");
+        alert.getButtonTypes().setAll(revanchaButton, salirButton,inicioButton);
+
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.setAlwaysOnTop(true);
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == revanchaButton) {
+                reiniciarJuego(); // Implementa esta función para reiniciar el juego.
+            } else if (response == salirButton) {
+                Stage primaryStage = (Stage) imageViews[0][0].getScene().getWindow();
+                primaryStage.close();
+            }
+            else if(response== inicioButton){
+                try{
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ec/edu/espol/chess/Chess.fxml"));
+                    Parent menuParent = loader.load();
+                    Scene menuScene = new Scene(menuParent);
+                    ChessController chessController = loader.getController();
+                    // Puedes realizar cualquier inicialización adicional aquí si es necesario
+                    Stage primaryStage = (Stage) imageViews[0][0].getScene().getWindow();
+                    primaryStage.setScene(menuScene);
+                    primaryStage.show();
+                }
+                catch(IOException e){
+                    System.out.println(e.getMessage());
+                }
+            }
+        });
+
+    }
+    private void reiniciarJuego(){
+      setPlayers(players);
+      turno=0;
+    }
     private boolean jaque(ImageView[][] tablero, String color) {
     boolean enJaque = false;
         Ficha rey = obtenerRey(tablero,color);
-        System.out.println(colorActual);
+        if(rey==null){
+            mostrarMensaje("Jaque Mate");
+            mostrarVictoria(idEnemigo);
+            return false;
+        }
         int fRey = rey.getFila();
         int cRey = rey.getColumna();
         String colorRey = rey.getColor();
@@ -325,6 +376,9 @@ public class TableroMController implements Initializable {
                             }
                             else if(jaque(imageViews,colorEnemigo)){
                                 mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
+                            }
+                            if(estaEnLineaDePromocion(imageView)){
+                                promocion(imageView);
                             }
                             iniciarNuevoTurno();
                             
@@ -479,10 +533,91 @@ public class TableroMController implements Initializable {
         }
         return movValido;
     }
-    
-    private void nuevaFichaPromocioPeon(String nuevaPieza, Image img, Ficha origen) {
-        fichaSeleccionada.setImage(img);
-        origen.setTipo(nuevaPieza);
+    private boolean estaEnLineaDePromocion(ImageView imv) {
+    Ficha peon=(Ficha) imv.getUserData();
+    int fila = peon.getFila();
+    String color = peon.getColor();
+
+    if((color.equals("blanco") && fila == 0) || (color.equals("negro") && fila == 7)) {
+        return true;
+    }
+
+    return false;
+}
+   
+    private void promocion(ImageView imv){
+        Ficha peon =(Ficha) imv.getUserData();
+        int fila= peon.getFila();
+        int columna= peon.getColumna();
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Promoción de Peón");
+            alert.setHeaderText("El peón ha llegado a la fila de promoción.");
+            alert.setContentText("Elija la pieza a la que desea promocionar el peón:");
+
+            ButtonType torreButton = new ButtonType("Torre");
+            ButtonType reinaButton = new ButtonType("Reina");
+            ButtonType alfilButton = new ButtonType("Alfil");
+            ButtonType caballoButton = new ButtonType("Caballo");
+
+            alert.getButtonTypes().setAll(torreButton, reinaButton, alfilButton,caballoButton);
+            alert.showAndWait().ifPresent(response -> {
+                if(response==torreButton){
+                    if(peon.getColor().equals("blanco")){
+                        imageViews[fila][columna].setImage(null);
+                        imageViews[fila][columna].setUserData(null);
+                        setImage(imageViews[fila][columna],"/fichas/torreblanco.png",40,50);
+                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                    }
+                    else if(peon.getColor().equals("negro")){
+                        imageViews[fila][columna].setImage(null);
+                        imageViews[fila][columna].setUserData(null);
+                        setImage(imageViews[fila][columna],"/fichas/torrenegro.png",40,50);
+                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                    }
+                }
+                else if(response==reinaButton){
+                    if(peon.getColor().equals("blanco")){
+                        imageViews[fila][columna].setImage(null);
+                        imageViews[fila][columna].setUserData(null);
+                        setImage(imageViews[fila][columna],"/fichas/reinablanco.png",40,50);
+                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                    }
+                    else if(peon.getColor().equals("negro")){
+                        imageViews[fila][columna].setImage(null);
+                        imageViews[fila][columna].setUserData(null);
+                        setImage(imageViews[fila][columna],"/fichas/reinanegro.png",40,50);
+                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                    }
+                }
+                else if(response==alfilButton){
+                    if(peon.getColor().equals("blanco")){
+                        imageViews[fila][columna].setImage(null);
+                        imageViews[fila][columna].setUserData(null);
+                        setImage(imageViews[fila][columna],"/fichas/Alfilblanco.png",40,50);
+                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                    }
+                    else if(peon.getColor().equals("negro")){
+                        imageViews[fila][columna].setImage(null);
+                        imageViews[fila][columna].setUserData(null);
+                        setImage(imageViews[fila][columna],"/fichas/Alfilenegro.png",40,50);
+                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                    }
+                }
+                else if(response==caballoButton){
+                    if(peon.getColor().equals("blanco")){
+                        imageViews[fila][columna].setImage(null);
+                        imageViews[fila][columna].setUserData(null);
+                        setImage(imageViews[fila][columna],"/fichas/Caballoblanco.png",40,50);
+                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                    }
+                    else if(peon.getColor().equals("negro")){
+                        imageViews[fila][columna].setImage(null);
+                        imageViews[fila][columna].setUserData(null);
+                        setImage(imageViews[fila][columna],"/fichas/Caballonegro.png",40,50);
+                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                    }
+                }
+            });
     }
 
     private boolean moverTorre(ImageView destino) {
@@ -751,7 +886,7 @@ public class TableroMController implements Initializable {
             if (row > 1 && imageViews[row - 1][col].getImage() == null) {
                 casillasValidas[row - 1][col] = true;
             }
-        if(row==6 && imageViews[row-2][col].getImage()==null && imageViews[row - 1][col].getImage() == null){
+            if(row==6 && imageViews[row-2][col].getImage()==null && imageViews[row - 1][col].getImage() == null){
                 casillasValidas[row - 2][col] = true;
             }
             // Movimiento diagonal izquierda para comer
@@ -767,10 +902,11 @@ public class TableroMController implements Initializable {
         // Para peones negros
         if (ficha.getColor().equals("negro")) {
             // Movimiento hacia adelante
-            if (row < 6 && imageViews[row + 1][col].getImage() == null) {
+            try{
+                if (row <= 6 && imageViews[row + 1][col].getImage() == null) {
                 casillasValidas[row + 1][col] = true;
             }
-        if(row==1 && imageViews[row+2][col].getImage()==null&& imageViews[row + 1][col].getImage() == null){
+            if(row==1 && imageViews[row+2][col].getImage()==null&& imageViews[row + 1][col].getImage() == null){
                 casillasValidas[row + 2][col] = true;
             }
             // Movimiento diagonal izquierda para comer
@@ -781,6 +917,11 @@ public class TableroMController implements Initializable {
             if (row > 0 && col < 7 && imageViews[row + 1][col + 1].getImage() != null && !fichaNegra(imageViews[row + 1][col + 1])) {
                 casillasValidas[row + 1][col + 1] = true;
             }
+            }
+            catch(Exception e){
+                e.getMessage();
+            }
+            
         }
 
         return casillasValidas;
