@@ -81,6 +81,7 @@ public class TableroMController implements Initializable {
 
 
     private void inicializarTablero() {
+        gridPane.getChildren().clear();
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 Button b = new Button();
@@ -304,33 +305,41 @@ public class TableroMController implements Initializable {
     boolean enJaque = false;
         Ficha rey = obtenerRey(tablero,color);
         if(rey==null){
-            mostrarMensaje("Jaque Mate");
-            mostrarVictoria(idEnemigo);
-            return false;
+            enJaque= false;
         }
-        int fRey = rey.getFila();
-        int cRey = rey.getColumna();
-        String colorRey = rey.getColor();
-        ArrayList<ImageView> fichasOponente = obtenerFichasOponente(colorRey);
-        ArrayList<ImageView> casillasAtacadas = new ArrayList<>();
-        for (ImageView im : fichasOponente) {
-            boolean[][] casillasValidas = calcularCasillasValidas(im);
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    if (casillasValidas[i][j]) {
-                        casillasAtacadas.add(tablero[i][j]);
-                    }
-                }
-            }
-        }
-        for (ImageView casilla : casillasAtacadas) {
-            if (casilla.equals(tablero[fRey][cRey])) {
-                enJaque = true;
-                break;
-            }
+        else{
+          int fRey = rey.getFila();
+          int cRey = rey.getColumna();
+          String colorRey = rey.getColor();
+          ArrayList<ImageView> fichasOponente = obtenerFichasOponente(colorRey);
+          ArrayList<ImageView> casillasAtacadas = new ArrayList<>();
+          for (ImageView im : fichasOponente) {
+              boolean[][] casillasValidas = calcularCasillasValidas(im);
+              for (int i = 0; i < 8; i++) {
+                  for (int j = 0; j < 8; j++) {
+                      if (casillasValidas[i][j]) {
+                          casillasAtacadas.add(tablero[i][j]);
+                      }
+                  }
+              }
+          }
+          for (ImageView casilla : casillasAtacadas) {
+              if (casilla.equals(tablero[fRey][cRey])) {
+                  enJaque = true;
+                  break;
+              }  
+          }
     }
     return enJaque;
 }
+    private boolean jaqueMate(ImageView[][] tablero,String color){
+        boolean mate= false;
+        Ficha rey= obtenerRey(tablero,color);
+        if(rey== null){
+            mate= true;
+        }
+        return mate;
+    }
 
     private boolean fichaBlanca(ImageView imv){
         Ficha userData= (Ficha) imv.getUserData();
@@ -350,9 +359,18 @@ public class TableroMController implements Initializable {
             return userData!=null && (userData.getColor()).equals("negro");
     }
     }
+    private boolean juegoReiniciado(){
+        if(turno==0){
+            return true;
+        }
+        return false;
+    }
     private void handleButtonClick(MouseEvent event) {
         Button boton = (Button) event.getSource();
         ImageView imageView = (ImageView) boton.getGraphic();
+        if(jaqueMate(imageViews,colorEnemigo)){
+            return;
+        }
         switch(currentPhase){
             case STANDBY:
                 if(turnoJugador(imageView)){
@@ -377,8 +395,14 @@ public class TableroMController implements Initializable {
                             else if(jaque(imageViews,colorEnemigo)){
                                 mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
                             }
-                            if(estaEnLineaDePromocion(imageView)){
-                                promocion(imageView);
+                            if(jaqueMate(imageViews,colorEnemigo)){
+                                mostrarMensaje("Jaque Mate");
+                                mostrarVictoria(idJugador);
+                            }
+                            else{
+                               if(estaEnLineaDePromocion(imageView)){
+                                    promocion(imageView); 
+                            } 
                             }
                             iniciarNuevoTurno();
                             
@@ -393,6 +417,10 @@ public class TableroMController implements Initializable {
                             else if(jaque(imageViews,colorEnemigo)){
                                 mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
                             }
+                            if(jaqueMate(imageViews,colorEnemigo)){
+                                mostrarMensaje("Jaque Mate");
+                                mostrarVictoria(idJugador);
+                            }
                             iniciarNuevoTurno();
                         }
                     }
@@ -404,6 +432,10 @@ public class TableroMController implements Initializable {
                             }
                             else if(jaque(imageViews,colorEnemigo)){
                                 mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
+                            }
+                            if(jaqueMate(imageViews,colorEnemigo)){
+                                mostrarMensaje("Jaque Mate");
+                                mostrarVictoria(idJugador);
                             }
                             iniciarNuevoTurno();
                         }
@@ -417,6 +449,10 @@ public class TableroMController implements Initializable {
                             else if(jaque(imageViews,colorEnemigo)){
                                 mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
                             }
+                            if(jaqueMate(imageViews,colorEnemigo)){
+                                mostrarMensaje("Jaque Mate");
+                                mostrarVictoria(idJugador);
+                            }
                             iniciarNuevoTurno();
                         }
                     }
@@ -429,6 +465,10 @@ public class TableroMController implements Initializable {
                             else if(jaque(imageViews,colorEnemigo)){
                                 mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
                             }
+                            if(jaqueMate(imageViews,colorEnemigo)){
+                                mostrarMensaje("Jaque Mate");
+                                mostrarVictoria(idJugador);
+                            }
                             iniciarNuevoTurno();
                         }
                     }       
@@ -440,6 +480,10 @@ public class TableroMController implements Initializable {
                             }
                             else if(jaque(imageViews,colorEnemigo)){
                                 mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
+                            }
+                            if(jaqueMate(imageViews,colorEnemigo)){
+                                mostrarMensaje("Jaque Mate");
+                                mostrarVictoria(idJugador);
                             }
                             iniciarNuevoTurno();
                         }
@@ -580,13 +624,13 @@ public class TableroMController implements Initializable {
                         imageViews[fila][columna].setImage(null);
                         imageViews[fila][columna].setUserData(null);
                         setImage(imageViews[fila][columna],"/fichas/reinablanco.png",40,50);
-                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                        imageViews[fila][columna].setUserData(new Ficha("reina",peon.getColor(),fila,columna));
                     }
                     else if(peon.getColor().equals("negro")){
                         imageViews[fila][columna].setImage(null);
                         imageViews[fila][columna].setUserData(null);
                         setImage(imageViews[fila][columna],"/fichas/reinanegro.png",40,50);
-                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                        imageViews[fila][columna].setUserData(new Ficha("reina",peon.getColor(),fila,columna));
                     }
                 }
                 else if(response==alfilButton){
@@ -594,13 +638,13 @@ public class TableroMController implements Initializable {
                         imageViews[fila][columna].setImage(null);
                         imageViews[fila][columna].setUserData(null);
                         setImage(imageViews[fila][columna],"/fichas/Alfilblanco.png",40,50);
-                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                        imageViews[fila][columna].setUserData(new Ficha("alfil",peon.getColor(),fila,columna));
                     }
                     else if(peon.getColor().equals("negro")){
                         imageViews[fila][columna].setImage(null);
                         imageViews[fila][columna].setUserData(null);
-                        setImage(imageViews[fila][columna],"/fichas/Alfilenegro.png",40,50);
-                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                        setImage(imageViews[fila][columna],"/fichas/Alfilnegro.png",40,50);
+                        imageViews[fila][columna].setUserData(new Ficha("alfil",peon.getColor(),fila,columna));
                     }
                 }
                 else if(response==caballoButton){
@@ -608,13 +652,13 @@ public class TableroMController implements Initializable {
                         imageViews[fila][columna].setImage(null);
                         imageViews[fila][columna].setUserData(null);
                         setImage(imageViews[fila][columna],"/fichas/Caballoblanco.png",40,50);
-                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                        imageViews[fila][columna].setUserData(new Ficha("caballo",peon.getColor(),fila,columna));
                     }
                     else if(peon.getColor().equals("negro")){
                         imageViews[fila][columna].setImage(null);
                         imageViews[fila][columna].setUserData(null);
                         setImage(imageViews[fila][columna],"/fichas/Caballonegro.png",40,50);
-                        imageViews[fila][columna].setUserData(new Ficha("torre",peon.getColor(),fila,columna));
+                        imageViews[fila][columna].setUserData(new Ficha("caballo",peon.getColor(),fila,columna));
                     }
                 }
             });
@@ -883,19 +927,24 @@ public class TableroMController implements Initializable {
         // Para peones blancos
         if (ficha.getColor().equals("blanco")) {
             // Movimiento hacia adelante
-            if (row > 1 && imageViews[row - 1][col].getImage() == null) {
-                casillasValidas[row - 1][col] = true;
+            try{
+                if (row >= 1 && imageViews[row - 1][col].getImage() == null) {
+                    casillasValidas[row - 1][col] = true;
+                }
+                if(row==6 && imageViews[row-2][col].getImage()==null && imageViews[row - 1][col].getImage() == null){
+                    casillasValidas[row - 2][col] = true;
+                }
+                // Movimiento diagonal izquierda para comer
+                if (row > 0 && col > 0 && imageViews[row - 1][col - 1].getImage() != null && !fichaBlanca(imageViews[row - 1][col - 1])) {
+                    casillasValidas[row - 1][col - 1] = true;
+                }
+                // Movimiento diagonal derecha para comer
+                if (row > 0 && col < 7 && imageViews[row - 1][col + 1].getImage() != null && !fichaBlanca(imageViews[row - 1][col + 1])) {
+                    casillasValidas[row - 1][col + 1] = true;
+                }
             }
-            if(row==6 && imageViews[row-2][col].getImage()==null && imageViews[row - 1][col].getImage() == null){
-                casillasValidas[row - 2][col] = true;
-            }
-            // Movimiento diagonal izquierda para comer
-            if (row > 0 && col > 0 && imageViews[row - 1][col - 1].getImage() != null && !fichaBlanca(imageViews[row - 1][col - 1])) {
-                casillasValidas[row - 1][col - 1] = true;
-            }
-            // Movimiento diagonal derecha para comer
-            if (row > 0 && col < 7 && imageViews[row - 1][col + 1].getImage() != null && !fichaBlanca(imageViews[row - 1][col + 1])) {
-                casillasValidas[row - 1][col + 1] = true;
+            catch(Exception e){
+                System.out.println(e.getMessage());
             }
         }
 
