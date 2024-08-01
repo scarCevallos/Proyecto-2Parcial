@@ -5,8 +5,8 @@
 package ec.edu.espol.controllers;
 
 import ec.edu.espol.chess.App;
-import ec.edu.espol.chess.Chess;
-import ec.edu.espol.chess.Jugador;
+import ec.edu.espol.model.Chess;
+import ec.edu.espol.model.Jugador;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;

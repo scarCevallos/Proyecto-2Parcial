@@ -1,0 +1,11 @@
+ec\edu\espol\controllers\ChessController.class
+ec\edu\espol\chess\StartGame.class
+module-info.class
+ec\edu\espol\chess\Jugador.class
+ec\edu\espol\chess\App.class
+ec\edu\espol\controllers\TableroMController$1.class
+ec\edu\espol\controllers\TableroMController.class
+ec\edu\espol\chess\Chess.class
+ec\edu\espol\chess\Ficha.class
+ec\edu\espol\chess\GamePhase.class
+ec\edu\espol\controllers\ChoosePieceTypeController.class

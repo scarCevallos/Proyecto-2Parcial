@@ -2,7 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package ec.edu.espol.chess;
+package ec.edu.espol.model;
+
+import ec.edu.espol.util.MovementStrategy;
+import javafx.scene.image.ImageView;
 
 /**
  *
@@ -13,6 +16,8 @@ public class Ficha {
     private String color;
     private int fila;
     private int columna;
+    private MovementStrategy movementStrategy;
+
 
     public String getTipo() {
         return tipo;
@@ -46,12 +51,18 @@ public class Ficha {
         this.columna = columna;
     }
 
-    public Ficha(String tipo, String color, int fila, int columna) {
+    public Ficha(String tipo, String color, int fila, int columna, MovementStrategy movementStrategy) {
         this.tipo = tipo;
         this.color = color;
         this.fila = fila;
         this.columna = columna;
+        this.movementStrategy = movementStrategy;
     }
+
+    public boolean mover(ImageView destino, ImageView[][] imageViews) {
+        return movementStrategy.mover(destino, imageViews, this);
+    }
+
     public Ficha(int fila, int columna){
         this.fila=fila;
         this.columna= columna;
