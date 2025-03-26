@@ -4,7 +4,7 @@
  */
 package ec.edu.espol.controllers;
 
-import ec.edu.espol.chess.Jugador;
+import ec.edu.espol.model.Jugador;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;

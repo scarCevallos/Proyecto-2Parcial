@@ -4,9 +4,10 @@
  */
 package ec.edu.espol.controllers;
 
-import ec.edu.espol.chess.Ficha;
-import ec.edu.espol.chess.GamePhase;
-import ec.edu.espol.chess.Jugador;
+import ec.edu.espol.model.Ficha;
+import ec.edu.espol.model.GamePhase;
+import ec.edu.espol.model.GameSubject;
+import ec.edu.espol.model.Jugador;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -66,17 +67,26 @@ public class TableroMController implements Initializable {
     private String colorEnemigo;
     private int idJugador;
     private int idEnemigo;
+    GameSubject game;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        game = new GameSubject();
+        TurnoLabelObserver turnoLabelObserver = new TurnoLabelObserver(turnoLabel);
+        game.addObserver(turnoLabelObserver);
+
+        inicializarTablero();
+        mensajeTurno();
     }
     public void setScene(Scene scene) {
         tableroScene = scene;
     }
     public void setPlayers(ArrayList<Jugador> players) {
-        this.players = players;
-        inicializarTablero();
-        mensajeTurno();
+    this.players = players;
+    inicializarTablero();
+    mensajeTurno();
     }
+
+
 
 
 
@@ -169,38 +179,20 @@ public class TableroMController implements Initializable {
     }
 
     private void mensajeTurno() {
-        Jugador jugadoractual=null;
-        for(Jugador j: players){
-            if(turno%2==0 && (j.getTipoFicha().equalsIgnoreCase("Negras"))){
-                jugadoractual=j;
-                colorActual= "negro";
-                colorEnemigo= "blanco";
-                idJugador=j.getId();
-                if(idJugador==1){
-                    idEnemigo=2;
-                }
-                else{
-                    idEnemigo=1;
-                }
-                break;
-            }
-            else if(turno%2!=0 && (!j.getTipoFicha().equalsIgnoreCase("Negras"))){
-               jugadoractual=j;
-               colorActual= "blanco";
-               colorEnemigo="negro";
-               idJugador=j.getId();
-               if(idJugador==1){
-                    idEnemigo=2;
-                }
-                else{
-                    idEnemigo=1;
-                }
-               break;
-            }
-            }
-        String mturno= "Jugador "+ jugadoractual.getId()+ " "+"Turno N° "+turno;
-        turnoLabel.setText(mturno);
+    Jugador jugadoractual = null;
+    for (Jugador j : players) {
+        if (turno % 2 == 0 && j.getTipoFicha().equalsIgnoreCase("Negras")) {
+            jugadoractual = j;
+            break;
+        } else if (turno % 2 != 0 && !j.getTipoFicha().equalsIgnoreCase("Negras")) {
+            jugadoractual = j;
+            break;
+        }
     }
+    String mturno = "Jugador " + jugadoractual.getId() + " Turno N° " + turno;
+    game.notifyObservers(mturno);
+    }
+
 
     private void iniciarNuevoTurno() {
         turno++;
@@ -366,144 +358,57 @@ public class TableroMController implements Initializable {
         return false;
     }
     private void handleButtonClick(MouseEvent event) {
-        Button boton = (Button) event.getSource();
-        ImageView imageView = (ImageView) boton.getGraphic();
-        if(jaqueMate(imageViews,colorEnemigo)){
-            return;
-        }
-        switch(currentPhase){
-            case STANDBY:
-                if(turnoJugador(imageView)){
-                    if(esImagenFichaValida(imageView)){
-                        fichaSeleccionada=imageView;
-                        currentPhase= GamePhase.MAIN;
-                        resetearColorCasillas();
-                        casillasValidas= calcularCasillasValidas(fichaSeleccionada);
-                        resaltarCasillasValidas(casillasValidas);
-                    }
-                }
-                break;
-            case MAIN:
-                if(imageView!=fichaSeleccionada && !esImagenFichaValida2(imageView,fichaSeleccionada)){
-                    Ficha f=(Ficha) fichaSeleccionada.getUserData();
-                    if(f.getTipo().equals("peon")){
-                        if(moverPeon(imageView)){
-                            moverFicha(imageView);
-                            if(jaque(imageViews,colorActual)){
-                                mostrarMensaje("Jugador "+idJugador+" estas en jaque");
-                            }
-                            else if(jaque(imageViews,colorEnemigo)){
-                                mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
-                            }
-                            if(jaqueMate(imageViews,colorEnemigo)){
-                                mostrarMensaje("Jaque Mate");
-                                mostrarVictoria(idJugador);
-                            }
-                            else{
-                               if(estaEnLineaDePromocion(imageView)){
-                                    promocion(imageView); 
-                            } 
-                            }
-                            iniciarNuevoTurno();
-                            
-                        }
-                    }
-                    else if(f.getTipo().equals("torre")){
-                        if(moverTorre(imageView)){
-                            moverFicha(imageView);
-                            if(jaque(imageViews,colorActual)){
-                                mostrarMensaje("Jugador "+idJugador+" estas en jaque");
-                            }
-                            else if(jaque(imageViews,colorEnemigo)){
-                                mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
-                            }
-                            if(jaqueMate(imageViews,colorEnemigo)){
-                                mostrarMensaje("Jaque Mate");
-                                mostrarVictoria(idJugador);
-                            }
-                            iniciarNuevoTurno();
-                        }
-                    }
-                    else if(f.getTipo().equals("caballo")){
-                        if(moverCaballo(imageView)){
-                            moverFicha(imageView);
-                            if(jaque(imageViews,colorActual)){
-                                mostrarMensaje("Jugador "+idJugador+" estas en jaque");
-                            }
-                            else if(jaque(imageViews,colorEnemigo)){
-                                mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
-                            }
-                            if(jaqueMate(imageViews,colorEnemigo)){
-                                mostrarMensaje("Jaque Mate");
-                                mostrarVictoria(idJugador);
-                            }
-                            iniciarNuevoTurno();
-                        }
-                    }
-                    else if(f.getTipo().equals("alfil")){
-                        if(moverAlfil(imageView)){
-                            moverFicha(imageView);
-                            if(jaque(imageViews,colorActual)){
-                                mostrarMensaje("Jugador "+idJugador+" estas en jaque");
-                            }
-                            else if(jaque(imageViews,colorEnemigo)){
-                                mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
-                            }
-                            if(jaqueMate(imageViews,colorEnemigo)){
-                                mostrarMensaje("Jaque Mate");
-                                mostrarVictoria(idJugador);
-                            }
-                            iniciarNuevoTurno();
-                        }
-                    }
-                    else if(f.getTipo().equals("reina")){
-                        if(moverReina(imageView)){
-                            moverFicha(imageView);
-                            if(jaque(imageViews,colorActual)){
-                                mostrarMensaje("Jugador "+idJugador+" estas en jaque");
-                            }
-                            else if(jaque(imageViews,colorEnemigo)){
-                                mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
-                            }
-                            if(jaqueMate(imageViews,colorEnemigo)){
-                                mostrarMensaje("Jaque Mate");
-                                mostrarVictoria(idJugador);
-                            }
-                            iniciarNuevoTurno();
-                        }
-                    }       
-                    else if(f.getTipo().equals("rey")){
-                        if(moverRey(imageView)){
-                            moverFicha(imageView);
-                            if(jaque(imageViews,colorActual)){
-                                mostrarMensaje("Jugador "+idJugador+" estas en jaque");
-                            }
-                            else if(jaque(imageViews,colorEnemigo)){
-                                mostrarMensaje("Jugador "+idJugador+" hizo jaque a Jugador "+ idEnemigo);
-                            }
-                            if(jaqueMate(imageViews,colorEnemigo)){
-                                mostrarMensaje("Jaque Mate");
-                                mostrarVictoria(idJugador);
-                            }
-                            iniciarNuevoTurno();
-                        }
-                        }
+    Button boton = (Button) event.getSource();
+    ImageView imageView = (ImageView) boton.getGraphic();
+    if (jaqueMate(imageViews, colorEnemigo)) {
+        return;
+    }
+    switch (currentPhase) {
+        case STANDBY:
+            if (turnoJugador(imageView)) {
+                if (esImagenFichaValida(imageView)) {
+                    fichaSeleccionada = imageView;
+                    currentPhase = GamePhase.MAIN;
                     resetearColorCasillas();
-
-                }
-                else if(esImagenFichaValida2(imageView,fichaSeleccionada)){
-                    fichaSeleccionada= imageView;
-                    resetearColorCasillas();
-                    casillasValidas= calcularCasillasValidas(fichaSeleccionada);
+                    casillasValidas = calcularCasillasValidas(fichaSeleccionada);
                     resaltarCasillasValidas(casillasValidas);
                 }
-                break;
-            case BATTLE:
-                iniciarNuevoTurno();
-                break;
-        }
-
+            }
+            break;
+        case MAIN:
+            if (imageView != fichaSeleccionada && !esImagenFichaValida2(imageView, fichaSeleccionada)) {
+                Ficha f = (Ficha) fichaSeleccionada.getUserData();
+                if (f.mover(imageView, imageViews)) {
+                    moverFicha(imageView);
+                    if (jaque(imageViews, colorActual)) {
+                        mostrarMensaje("Jugador " + idJugador + " estas en jaque");
+                    } else if (jaque(imageViews, colorEnemigo)) {
+                        mostrarMensaje("Jugador " + idJugador + " hizo jaque a Jugador " + idEnemigo);
+                    }
+                    if (jaqueMate(imageViews, colorEnemigo)) {
+                        mostrarMensaje("Jaque Mate");
+                        mostrarVictoria(idJugador);
+                    } else {
+                        if (estaEnLineaDePromocion(imageView)) {
+                            promocion(imageView);
+                        }
+                    }
+                    iniciarNuevoTurno();
+                }
+                resetearColorCasillas();
+            } else if (esImagenFichaValida2(imageView, fichaSeleccionada)) {
+                fichaSeleccionada = imageView;
+                resetearColorCasillas();
+                casillasValidas = calcularCasillasValidas(fichaSeleccionada);
+                resaltarCasillasValidas(casillasValidas);
+            }
+            break;
+        case BATTLE:
+            iniciarNuevoTurno();
+            break;
     }
+}
+
 
 // Método para verificar si la imagen es la imagen de una ficha válida
     private boolean esImagenFichaValida(ImageView imageView) {
